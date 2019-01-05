@@ -133,8 +133,12 @@ def scriptToJSON(scriptf, timing=None):
     with closing(scriptf):
         scriptf.readline() # ignore first header line from script file
         offset = 0
+        buf = ''
         for t in timing:
-            data = escapeString(scriptf.read(t[1]))
+            while (len(buf) < t[1]):
+                buf += scriptf.read(t[1])
+            data = escapeString(buf[:t[1]])
+            buf = buf[t[1]:]
             offset += t[0]
             ret.append((data, offset))
     return dumps(ret)
